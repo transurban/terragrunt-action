@@ -22,9 +22,12 @@ inputs:
     default: '0'
     required: false
   github_token:
-    description: 'Provide a custom Github Personal Access Token (PAT)'
+    description: 'Provide a custom Github Access Token (App installation token/PAT/etc)'
   github_private_path:
     description: 'Path to a private Github repo/organisation. i.e github.com/<org name here>'    
+  github_auth_type:
+    description: 'Type of authentication token provided (i.e. app | pat )
+    default: app
 outputs:
   tg_action_output:
     description: 'Terragrunt execution output'
