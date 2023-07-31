@@ -27,7 +27,7 @@ function clean_multiline_text {
 # configure custom git authentication token based on provided private/internal org/repo path (supports GitHub App or PAT)
 function configurePrivateGitPath(){
   if [ -n "${INPUT_GITHUB_TOKEN}" ] && [ -n "${INPUT_GITHUB_PRIVATE_PATH}" ]; then
-    if [ -n "${INPUT_GITHUB_AUTH_TYPE}" ] && [ "${INPUT_GITHUB_AUTH_TYPE}" =~ "app" ]; then
+    if [ -n "${INPUT_GITHUB_AUTH_TYPE}" ] && [ "${INPUT_GITHUB_AUTH_TYPE}" == "app" ]; then
       git config --global url."https://x-access-token:${INPUT_GITHUB_TOKEN}@${INPUT_GITHUB_PRIVATE_PATH}".insteadOf "https://${INPUT_GITHUB_PRIVATE_PATH}"
     fi
   fi
