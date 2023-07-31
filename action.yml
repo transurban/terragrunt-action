@@ -26,7 +26,7 @@ inputs:
   github_private_path:
     description: 'Path to a private Github repo/organisation. i.e github.com/<org name here>'    
   github_auth_type:
-    description: 'Type of authentication token provided (i.e. app | pat )
+    description: 'Type of authentication token provided (i.e. app | pat )'
     default: app
 outputs:
   tg_action_output:
