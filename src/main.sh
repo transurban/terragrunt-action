@@ -61,6 +61,9 @@ function run_terragrunt {
   local -r dir="$1"
   local -r command=($2)
 
+  echo "run_terragrunt: command ==> $command"
+  echo "command array ==> " "${command[@]}"
+
   # terragrunt_log_file can be used later as file with execution output
   terragrunt_log_file=$(mktemp)
 
@@ -109,6 +112,7 @@ function setup_pre_exec {
 }
 
 function main {
+  set -x
   log "Starting Terragrunt Action"
   trap 'log "Finished Terragrunt Action execution"' EXIT
   local -r tf_version=${INPUT_TF_VERSION}
@@ -116,6 +120,8 @@ function main {
   local -r tg_command=${INPUT_TG_COMMAND}
   local -r tg_comment=${INPUT_TG_COMMENT:-0}
   local -r tg_dir=${INPUT_TG_DIR:-.}
+
+  echo "===> tg_command: $tg_command"
 
   if [[ -z "${tf_version}" ]]; then
     log "tf_version is not set"
