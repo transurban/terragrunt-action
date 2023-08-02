@@ -61,9 +61,6 @@ function run_terragrunt {
   local -r dir="$1"
   local -r command=($2)
 
-  echo "run_terragrunt: command ==> $command"
-  echo "command array ==> " "${command[@]}"
-
   # terragrunt_log_file can be used later as file with execution output
   terragrunt_log_file=$(mktemp)
 
@@ -122,8 +119,6 @@ function main {
   local -r tg_comment=${INPUT_TG_COMMENT:-0}
   local -r tg_dir=${INPUT_TG_DIR:-.}
 
-  echo "===> tg_command: $tg_command"
-
   if [[ -z "${tf_version}" ]]; then
     log "tf_version is not set"
     exit 1
@@ -164,7 +159,8 @@ function main {
   terragrunt_log_content=$(cat "${log_file}")
   # output without colors
   local terragrunt_output
-  terragrunt_output=$(clean_colors "${terragrunt_log_content}")
+#  terragrunt_output=$(clean_colors "${terragrunt_log_content}")
+  terragrunt_output="${terragrunt_log_content}"
 
   if [[ "${tg_comment}" == "1" ]]; then
     comment "Execution result of \`$tg_command\` in \`${tg_dir}\` :
