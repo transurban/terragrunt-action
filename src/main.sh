@@ -112,7 +112,6 @@ function setup_pre_exec {
 }
 
 function main {
-  set -x
   log "Starting Terragrunt Action"
   trap 'log "Finished Terragrunt Action execution"' EXIT
   local -r tf_version=${INPUT_TF_VERSION}
