@@ -29,7 +29,7 @@ inputs:
     description: 'Type of authentication token provided (i.e. app | pat )'
     default: app
   tg_generate_plan_output:
-    description: 'Generate a plan output file'
+    description: 'Generate a plan output file at this given path'
     default: '0'
     required: false
 outputs:
