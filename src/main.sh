@@ -150,7 +150,6 @@ function main {
     local tg_arg_and_commands="${tg_command}"
   fi
   if [[ "$tg_generate_plan_output" != "0" ]]; then
-#    terragrunt_plan_output="$(mktemp)"
     tg_arg_and_commands="${tg_arg_and_commands} -out ${tg_generate_plan_output}"
   fi
 
@@ -183,7 +182,7 @@ ${terragrunt_output}
   echo "tg_action_output=${tg_action_output}" >> "${GITHUB_OUTPUT}"
 
   if [[ "$tg_generate_plan_output" != "0" ]]; then
-    echo "tg_plan_output_path=${terragrunt_plan_output}" >> "${GITHUB_OUTPUT}"
+    terragrunt show -json "${tg_generate_plan_output}" > "${tg_generate_plan_output}.json"
   fi
   exit $exit_code
 }
