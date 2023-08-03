@@ -83,7 +83,7 @@ function comment {
     log "Skipping comment as there is not comment url"
     return
   fi
-#  local messagePayload
+
   messagePayload=$(mktemp)
   messageFile=$(mktemp)
   echo "$message" > "$messageFile"
@@ -160,8 +160,7 @@ function main {
   terragrunt_log_content=$(cat "${log_file}")
   # output without colors
   local terragrunt_output
-#  terragrunt_output=$(clean_colors "${terragrunt_log_content}")
-  terragrunt_output="${terragrunt_log_content}"
+  terragrunt_output=$(clean_colors "${terragrunt_log_content}")
 
   if [[ "${tg_comment}" == "1" ]]; then
     comment "Execution result of \`$tg_command\` in \`${tg_dir}\` :
