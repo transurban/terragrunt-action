@@ -85,7 +85,9 @@ function comment {
   fi
 #  local messagePayload
   messagePayload=$(mktemp)
-  jq -n --arg body "$message" '{ "body": $body }' > "$messagePayload"
+  messageFile=$(mktemp)
+  echo "$message" > "$messageFile"
+  jq -n --slurpfile body "$messageFile" '{ "body": $body }' > "$messagePayload"
   curl -s -S -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -d @"$messagePayload" "$comment_url"
 }
 
