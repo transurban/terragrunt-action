@@ -145,9 +145,9 @@ function main {
 
   # add auto approve for apply and destroy commands
   if [[ "$tg_command" == "apply"* || "$tg_command" == "destroy"* || "$tg_command" == "run-all apply"* || "$tg_command" == "run-all destroy"* ]]; then
-    local -r tg_arg_and_commands="${tg_command} -auto-approve --terragrunt-non-interactive"
+    local tg_arg_and_commands="${tg_command} -auto-approve --terragrunt-non-interactive"
   else
-    local -r tg_arg_and_commands="${tg_command}"
+    local tg_arg_and_commands="${tg_command}"
   fi
   if [[ "$tg_generate_plan_output" == "1" ]]; then
     terragrunt_plan_output="$(mktemp)"
