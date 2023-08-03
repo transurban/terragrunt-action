@@ -148,6 +148,11 @@ function main {
   else
     local -r tg_arg_and_commands="${tg_command}"
   fi
+  if [[ "${tg_generate_plan_output]}" == "1" ]]; then
+    terragrunt_plan_output="$(mktemp)"
+    tg_arg_and_commands="${tg_arg_and_commands} -out ${terragrunt_plan_output}"
+  fi
+
   run_terragrunt "${tg_dir}" "${tg_arg_and_commands}"
 
   local -r log_file="${terragrunt_log_file}"
@@ -176,6 +181,9 @@ ${terragrunt_output}
   tg_action_output=$(clean_multiline_text "${terragrunt_output}")
   echo "tg_action_output=${tg_action_output}" >> "${GITHUB_OUTPUT}"
 
+  if [[ "${tg_generate_plan_output]}" == "1" ]]; then
+    echo "tg_plan_output=${terragrunt_plan_output}" >> "${GITHUB_OUTPUT}"
+  fi
   exit $exit_code
 }
 

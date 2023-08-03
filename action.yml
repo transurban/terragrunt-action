@@ -28,11 +28,17 @@ inputs:
   github_auth_type:
     description: 'Type of authentication token provided (i.e. app | pat )'
     default: app
+  tg_generate_plan_output:
+    description: 'Generate a plan output file'
+    default: '0'
+    required: false
 outputs:
   tg_action_output:
     description: 'Terragrunt execution output'
   tg_action_exit_code:
     description: 'Terragrunt exit code'
+  tg_output_plan:
+    description: 'Terragrunt plan output file path'
 runs:
   using: 'docker'
   image: './Dockerfile'
