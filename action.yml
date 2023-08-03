@@ -32,6 +32,9 @@ inputs:
     description: 'Generate a plan output file at this given path'
     default: '0'
     required: false
+  tg_plan_file:
+    description: 'Path to the plan file to be used for apply'
+    required: false
 outputs:
   tg_action_output:
     description: 'Terragrunt execution output'

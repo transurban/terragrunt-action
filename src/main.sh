@@ -120,6 +120,7 @@ function main {
   local -r tg_comment=${INPUT_TG_COMMENT:-0}
   local -r tg_dir=${INPUT_TG_DIR:-.}
   local -r tg_generate_plan_output=${INPUT_TG_GENERATE_PLAN_OUTPUT:-0}
+  local -r tg_plan_file=${INPUT_TG_PLAN_FILE}
 
   if [[ -z "${tf_version}" ]]; then
     log "tf_version is not set"
@@ -145,7 +146,7 @@ function main {
 
   # add auto approve for apply and destroy commands
   if [[ "$tg_command" == "apply"* || "$tg_command" == "destroy"* || "$tg_command" == "run-all apply"* || "$tg_command" == "run-all destroy"* ]]; then
-    local tg_arg_and_commands="${tg_command} -auto-approve --terragrunt-non-interactive"
+    local tg_arg_and_commands="${tg_command} -auto-approve --terragrunt-non-interactive ${tg_plan_file}"
   else
     local tg_arg_and_commands="${tg_command}"
   fi
