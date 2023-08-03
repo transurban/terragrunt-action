@@ -182,7 +182,7 @@ ${terragrunt_output}
   echo "tg_action_output=${tg_action_output}" >> "${GITHUB_OUTPUT}"
 
   if [[ "${tg_generate_plan_output]}" == "1" ]]; then
-    echo "tg_plan_output=${terragrunt_plan_output}" >> "${GITHUB_OUTPUT}"
+    echo "tg_plan_output_path=${terragrunt_plan_output}" >> "${GITHUB_OUTPUT}"
   fi
   exit $exit_code
 }
