@@ -119,6 +119,7 @@ function main {
   local -r tg_command=${INPUT_TG_COMMAND}
   local -r tg_comment=${INPUT_TG_COMMENT:-0}
   local -r tg_dir=${INPUT_TG_DIR:-.}
+  local -r tg_generate_plan_output=${INPUT_TG_GENERATE_PLAN_OUTPUT:-0}
 
   if [[ -z "${tf_version}" ]]; then
     log "tf_version is not set"
@@ -148,7 +149,7 @@ function main {
   else
     local -r tg_arg_and_commands="${tg_command}"
   fi
-  if [[ "${tg_generate_plan_output]}" == "1" ]]; then
+  if [[ "$tg_generate_plan_output" == "1" ]]; then
     terragrunt_plan_output="$(mktemp)"
     tg_arg_and_commands="${tg_arg_and_commands} -out ${terragrunt_plan_output}"
   fi
