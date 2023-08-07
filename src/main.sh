@@ -184,6 +184,7 @@ ${terragrunt_output}
 
   if [[ "$tg_generate_plan_output" != "0" ]]; then
     terragrunt show -json "${tg_generate_plan_output}" > "${tg_generate_plan_output}.json"
+    terragrunt show -no-color "${tg_generate_plan_output}" > "${tg_generate_plan_output}.txt"
   fi
   exit $exit_code
 }
