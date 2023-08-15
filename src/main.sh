@@ -65,7 +65,7 @@ function run_terragrunt {
   terragrunt_log_file=$(mktemp)
 
   cd "${dir}"
-  eval terragrunt "${command[@]}" 2>&1 | tee "${terragrunt_log_file}"
+  terragrunt "$2" 2>&1 | tee "${terragrunt_log_file}"
   # terragrunt_exit_code can be used later to determine if execution was successful
   echo "Pipestatus:"  "${PIPESTATUS[@]}"
   echo "Pipestatus[0]:"  "${PIPESTATUS[0]}"
