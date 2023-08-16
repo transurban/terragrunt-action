@@ -59,14 +59,16 @@ function install_terragrunt {
 # terragrunt_exit_code exit code of terragrunt command
 function run_terragrunt {
   local -r dir="$1"
-#  local -r command=($2)
-  local -r command="$2"
+  local -r command=($2)
 
   # terragrunt_log_file can be used later as file with execution output
   terragrunt_log_file=$(mktemp)
 
   cd "${dir}"
-  terragrunt "$command" 2>&1 | tee "${terragrunt_log_file}"
+  # Evaluating the command and argument string to ensure correct expansion of any literal variables (including --var=val)
+  echo terragrunt "${cmds[@]}" > ./terragrunt-cmd.sh
+  chmod +x ./terragrunt-cmd.sh
+  ./terragrunt-cmd.sh 2>&1 | tee "${terragrunt_log_file}"
   # terragrunt_exit_code can be used later to determine if execution was successful
   terragrunt_exit_code=${PIPESTATUS[0]}
 }
