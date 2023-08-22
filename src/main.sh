@@ -186,8 +186,12 @@ ${terragrunt_output}
   echo "tg_action_output=${tg_action_output}" >> "${GITHUB_OUTPUT}"
 
   if [[ "$tg_generate_plan_output" != "0" ]]; then
-    terragrunt show -json "${tg_generate_plan_output}" > "${tg_generate_plan_output}.json"
-    terragrunt show -no-color "${tg_generate_plan_output}" > "${tg_generate_plan_output}.txt"
+    local scope
+    if [[ "$tg_command" == "run-all"* ]]; then
+      scope="run-all"
+    fi
+    terragrunt $scope show -json "${tg_generate_plan_output}" > "${tg_generate_plan_output}.json"
+    terragrunt $scope show -no-color "${tg_generate_plan_output}" > "${tg_generate_plan_output}.txt"
   fi
   exit $exit_code
 }
