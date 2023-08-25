@@ -190,7 +190,7 @@ ${terragrunt_output}
     if [[ "$tg_command" == "run-all"* ]]; then
       scope="run-all"
     fi
-    $cmdArgsStr=$(echo $tg_command | cut -d' ' -f3-)
+    cmdArgsStr=$(echo "$tg_command" | cut -d' ' -f3-)
     terragrunt $scope show $cmdArgsStr  -json plan.out > "${tg_generate_plan_output}.json"
     terragrunt $scope show $cmdArgsStr -no-color plan.out > "${tg_generate_plan_output}.txt"
   fi
