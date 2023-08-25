@@ -60,13 +60,20 @@ function install_terragrunt {
 function run_terragrunt {
   local -r dir="$1"
   local -r command=($2)
+  local -r output_path="$3"
+
+  if [ -z "$output_path" ]; then
+    local stdout_redirect=""
+  else
+    local stdout_redirect="> ${output_path}"
+  fi
 
   # terragrunt_log_file can be used later as file with execution output
   terragrunt_log_file=$(mktemp)
 
   cd "${dir}"
   # Evaluating the command and argument string to ensure correct expansion of any literal variables (including --var=val)
-  echo terragrunt "${command[@]}" "2>&1" "||" exit "\$?" > ./terragrunt-cmd.sh
+  echo terragrunt "${command[@]}" "${stdout_redirect}" "2>&1" "||" exit "\$?" > ./terragrunt-cmd.sh
   chmod +x ./terragrunt-cmd.sh
   ./terragrunt-cmd.sh 2>&1 | tee "${terragrunt_log_file}"
   # terragrunt_exit_code can be used later to determine if execution was successful
@@ -157,7 +164,7 @@ function main {
     tg_arg_and_commands="${tg_arg_and_commands} -out plan.out"
   fi
 
-  run_terragrunt "${tg_dir}" "${tg_arg_and_commands}"
+  run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_generate_plan_output}
 
   local -r log_file="${terragrunt_log_file}"
   trap 'rm -rf ${log_file}' EXIT
@@ -185,15 +192,15 @@ ${terragrunt_output}
   tg_action_output=$(clean_multiline_text "${terragrunt_output}")
   echo "tg_action_output=${tg_action_output}" >> "${GITHUB_OUTPUT}"
 
-  if [[ "$tg_generate_plan_output" != "0" ]]; then
-    local scope
-    if [[ "$tg_command" == "run-all"* ]]; then
-      scope="run-all"
-    fi
-    cmdArgsStr=$(echo "$tg_command" | cut -d' ' -f3-)
-    terragrunt $scope show $cmdArgsStr  -json plan.out > "${tg_generate_plan_output}.json"
-    terragrunt $scope show $cmdArgsStr -no-color plan.out > "${tg_generate_plan_output}.txt"
-  fi
+#  if [[ "$tg_generate_plan_output" != "0" ]]; then
+#    local scope
+#    if [[ "$tg_command" == "run-all"* ]]; then
+#      scope="run-all"
+#    fi
+#    cmdArgsStr=$(echo "$tg_command" | cut -d' ' -f3-)
+#    terragrunt $scope show $cmdArgsStr  -json plan.out > "${tg_generate_plan_output}.json"
+#    terragrunt $scope show $cmdArgsStr -no-color plan.out > "${tg_generate_plan_output}.txt"
+#  fi
   exit $exit_code
 }
 
