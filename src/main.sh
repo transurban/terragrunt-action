@@ -164,7 +164,7 @@ function main {
     tg_arg_and_commands="${tg_arg_and_commands} -out plan.out"
   fi
 
-  run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_generate_plan_output}
+  run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_generate_plan_output}"
 
   local -r log_file="${terragrunt_log_file}"
   trap 'rm -rf ${log_file}' EXIT
