@@ -154,7 +154,7 @@ function main {
     local tg_arg_and_commands="${tg_command}"
   fi
   if [[ "$tg_generate_plan_output" != "0" ]]; then
-    tg_arg_and_commands="${tg_arg_and_commands} -out ${tg_generate_plan_output}"
+    tg_arg_and_commands="${tg_arg_and_commands} -out plan.out"
   fi
 
   run_terragrunt "${tg_dir}" "${tg_arg_and_commands}"
@@ -190,8 +190,9 @@ ${terragrunt_output}
     if [[ "$tg_command" == "run-all"* ]]; then
       scope="run-all"
     fi
-    terragrunt $scope show -json "${tg_generate_plan_output}" > "${tg_generate_plan_output}.json"
-    terragrunt $scope show -no-color "${tg_generate_plan_output}" > "${tg_generate_plan_output}.txt"
+    $cmdArgsStr=$(echo $tg_command | cut -d' ' -f3-)
+    terragrunt $scope show $cmdArgsStr  -json plan.out > "${tg_generate_plan_output}.json"
+    terragrunt $scope show $cmdArgsStr -no-color plan.out > "${tg_generate_plan_output}.txt"
   fi
   exit $exit_code
 }
