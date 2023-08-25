@@ -28,9 +28,8 @@ inputs:
   github_auth_type:
     description: 'Type of authentication token provided (i.e. app | pat )'
     default: app
-  tg_generate_plan_output:
-    description: 'Generate a plan output file at this given path'
-    default: '0'
+  tg_redirect_output:
+    description: 'Redirect Output to Given Path'
     required: false
   tg_plan_file:
     description: 'Path to the plan file to be used for apply'

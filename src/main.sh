@@ -60,12 +60,12 @@ function install_terragrunt {
 function run_terragrunt {
   local -r dir="$1"
   local -r command=($2)
-  local -r output_path="$3"
+  local -r redirect_output="$3"
 
-  if [ -z "$output_path" ]; then
+  if [ -z "$redirect_output" ]; then
     local stdout_redirect=""
   else
-    local stdout_redirect="> ${output_path}"
+    local stdout_redirect="> ${redirect_output}"
   fi
 
   # terragrunt_log_file can be used later as file with execution output
@@ -129,7 +129,7 @@ function main {
   local -r tg_command=${INPUT_TG_COMMAND}
   local -r tg_comment=${INPUT_TG_COMMENT:-0}
   local -r tg_dir=${INPUT_TG_DIR:-.}
-  local -r tg_generate_plan_output=${INPUT_TG_GENERATE_PLAN_OUTPUT:-0}
+  local -r tg_redirect_output=${INPUT_TG_REDIRECT_OUTPUT:-0}
   local -r tg_plan_file=${INPUT_TG_PLAN_FILE}
 
   if [[ -z "${tf_version}" ]]; then
@@ -160,11 +160,11 @@ function main {
   else
     local tg_arg_and_commands="${tg_command}"
   fi
-  if [[ "$tg_generate_plan_output" != "0" ]]; then
-    tg_arg_and_commands="${tg_arg_and_commands} -out plan.out"
+  if [[ -n "$tg_plan_file" ]]; then
+    tg_arg_and_commands="${tg_arg_and_commands} -out ${tg_plan_file}"
   fi
 
-  run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_generate_plan_output}"
+  run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_redirect_output}"
 
   local -r log_file="${terragrunt_log_file}"
   trap 'rm -rf ${log_file}' EXIT
