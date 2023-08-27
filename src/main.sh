@@ -177,7 +177,11 @@ function main {
   # output without colors
   local terragrunt_output
   terragrunt_output=$(clean_colors "${terragrunt_log_content}")
+  echo "Log File (tee)"
   cat "${log_file}"
+  echo "Log file, redirected"
+  cat "${tg_redirect_output}"
+
 
   if [[ "${tg_comment}" == "1" ]]; then
     comment "Execution result of \`$tg_command\` in \`${tg_dir}\` :
