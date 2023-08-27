@@ -21,6 +21,7 @@ function clean_multiline_text {
   output="${input//'%'/'%25'}"
   output="${output//$'\n'/'%0A'}"
   output="${output//$'\r'/'%0D'}"
+  output="${output//$'<'/'%3C'}"
   echo "${output}"
 }
 
@@ -83,7 +84,7 @@ function setup_git {
   # Avoid git permissions warnings
   git config --global --add safe.directory /github/workspace
   # Also trust any subfolder within workspace
-  git config --global --add safe.directory /github/workspace/*
+  git config --global --add safe.directory "*"
 }
 
 # Run INPUT_PRE_EXEC_* environment variables as Bash code
