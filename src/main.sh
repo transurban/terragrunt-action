@@ -62,12 +62,6 @@ function run_terragrunt {
   local -r command=($2)
   local -r redirect_output="$3"
 
-  if [ -z "$redirect_output" ]; then
-    local stdout_redirect=""
-  else
-    local stdout_redirect="> ${redirect_output}"
-  fi
-
   # terragrunt_log_file can be used later as file with execution output
   terragrunt_log_file=$(mktemp)
 
@@ -133,7 +127,7 @@ function main {
   local -r tg_command=${INPUT_TG_COMMAND}
   local -r tg_comment=${INPUT_TG_COMMENT:-0}
   local -r tg_dir=${INPUT_TG_DIR:-.}
-  local -r tg_redirect_output=${INPUT_TG_REDIRECT_OUTPUT:-0}
+  local -r tg_redirect_output=${INPUT_TG_REDIRECT_OUTPUT}
   local -r tg_plan_file=${INPUT_TG_PLAN_FILE}
 
   if [[ -z "${tf_version}" ]]; then
@@ -182,7 +176,7 @@ function main {
   local terragrunt_output
   terragrunt_output=$(clean_colors "${terragrunt_log_content}")
   echo "Log file, redirected"
-  cat "${tg_redirect_output}"
+  cat "${tg_redirect_output}" || echo "There is no redirect output"
 
 
   if [[ "${tg_comment}" == "1" ]]; then
