@@ -73,7 +73,11 @@ function run_terragrunt {
 
   cd "${dir}"
   # Evaluating the command and argument string to ensure correct expansion of any literal variables (including --var=val)
-  echo terragrunt "${command[@]}" "${stdout_redirect}" "2>&1" "||" exit "\$?" > ./terragrunt-cmd.sh
+  if [ -z "$redirect_output" ]; then
+      echo terragrunt "${command[@]}" "${stdout_redirect}" "2>&1" "||" exit "\$?" > ./terragrunt-cmd.sh
+    else
+      echo terragrunt "${command[@]}" "> ${redirect_output}" "||" exit "\$?" > ./terragrunt-cmd.sh
+    fi
   chmod +x ./terragrunt-cmd.sh
   ./terragrunt-cmd.sh 2>&1 | tee "${terragrunt_log_file}"
   # terragrunt_exit_code can be used later to determine if execution was successful
@@ -177,8 +181,6 @@ function main {
   # output without colors
   local terragrunt_output
   terragrunt_output=$(clean_colors "${terragrunt_log_content}")
-  echo "Log File (tee)"
-  cat "${log_file}"
   echo "Log file, redirected"
   cat "${tg_redirect_output}"
 
