@@ -157,9 +157,9 @@ function main {
     local tg_arg_and_commands="${tg_command} -auto-approve --terragrunt-non-interactive ${tg_plan_file}"
   else
     local tg_arg_and_commands="${tg_command}"
-  fi
-  if [[ -n "$tg_plan_file" ]]; then
-    tg_arg_and_commands="${tg_arg_and_commands} -out ${tg_plan_file}"
+    if [[ -n "$tg_plan_file" ]]; then
+      tg_arg_and_commands="${tg_arg_and_commands} -out ${tg_plan_file}"
+    fi
   fi
 
   run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_redirect_output}"
