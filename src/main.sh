@@ -175,9 +175,6 @@ function main {
   # output without colors
   local terragrunt_output
   terragrunt_output=$(clean_colors "${terragrunt_log_content}")
-  echo "Log file, redirected"
-  cat "${tg_redirect_output}" || echo "There is no redirect output"
-
 
   if [[ "${tg_comment}" == "1" ]]; then
     comment "Execution result of \`$tg_command\` in \`${tg_dir}\` :
@@ -193,15 +190,6 @@ ${terragrunt_output}
   tg_action_output=$(clean_multiline_text "${terragrunt_output}")
   echo "tg_action_output=${tg_action_output}" >> "${GITHUB_OUTPUT}"
 
-#  if [[ "$tg_generate_plan_output" != "0" ]]; then
-#    local scope
-#    if [[ "$tg_command" == "run-all"* ]]; then
-#      scope="run-all"
-#    fi
-#    cmdArgsStr=$(echo "$tg_command" | cut -d' ' -f3-)
-#    terragrunt $scope show $cmdArgsStr  -json plan.out > "${tg_generate_plan_output}.json"
-#    terragrunt $scope show $cmdArgsStr -no-color plan.out > "${tg_generate_plan_output}.txt"
-#  fi
   exit $exit_code
 }
 
