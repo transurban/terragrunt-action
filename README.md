@@ -6,24 +6,27 @@ A GitHub Action for installing and running Terragrunt
 
 Supported GitHub action inputs:
 
-| Input Name | Description                                       | Required |
-|:-----------|:--------------------------------------------------|:--------:|
-| tf_version | Terraform version to be used in Action execution  |  `true`  |
-| tg_version | Terragrunt version to be user in Action execution |  `true`  |
-| tg_dir     | Directory in which Terragrunt will be invoked     |  `true`  |
-| tg_command | Terragrunt command to execute                     |  `true`  |
-| tg_comment | Add comment to Pull request with execution output | `false`  |
+| Input Name     | Description                                                       | Required                                  | Example values |
+|:---------------|:------------------------------------------------------------------|:-----------------------------------------:|:--------------:|
+| tf_version     | Terraform version to be used in Action execution                  | `true` if `tofu_version` is not supplied |     1.4.6      | 
+| tofu_version   | OpenTofu version to be used in Action execution                   | `true` if `tf_version` is not supplied   |     1.6.0      |
+| tg_version     | Terragrunt version to be user in Action execution                 | `true`                                   |     0.50.8     |
+| tg_dir         | Directory in which Terragrunt will be invoked                     | `true`                                   |      work      |
+| tg_command     | Terragrunt command to execute                                     | `true`                                   |   plan/apply   |
+| tg_comment     | Add comment to Pull request with execution output                 | `false`                                  |      0/1       |
+| tg_add_approve | Automatically add "-auto-approve" to commands, enabled by default | `false`                                  |      0/1       |
 
 ## Environment Variables
 
 Supported environment variables:
 
-| Input Name            | Description                                                                                                 | 
-|:----------------------|:------------------------------------------------------------------------------------------------------------|
-| GITHUB_TOKEN          | GitHub token used to add comment to Pull request                                                            |
-| TF_LOG                | Log level for Terraform                                                                                     |
-| TF_VAR_name           | Define custom variable name as inputs                                                                       |
-| INPUT_PRE_EXEC_number | Environment variable is utilized to provide custom commands that will be executed before running Terragrunt |
+| Input Name             | Description                                                                                                  | 
+|:-----------------------|:-------------------------------------------------------------------------------------------------------------|
+| GITHUB_TOKEN           | GitHub token used to add comment to Pull request                                                             |
+| TF_LOG                 | Log level for Terraform                                                                                      |
+| TF_VAR_name            | Define custom variable name as inputs                                                                        |
+| INPUT_PRE_EXEC_number  | Environment variable is utilized to provide custom commands that will be executed before running Terragrunt  |
+| INPUT_POST_EXEC_number | Environment variable is utilized to provide custom commands that will be executed *after* running Terragrunt |
 
 ## Outputs
 
@@ -44,8 +47,8 @@ on:
   - pull_request
 
 env:
-  tf_version: '1.4.6'
-  tg_version: '0.46.3'
+  tf_version: '1.5.7'
+  tg_version: '0.53.2'
   working_dir: 'project'
 
 jobs:
@@ -53,10 +56,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Check terragrunt HCL
-        uses: gruntwork-io/terragrunt-action@v1
+        uses: gruntwork-io/terragrunt-action@v2
         with:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
@@ -68,10 +71,10 @@ jobs:
     needs: [ checks ]
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Plan
-        uses: gruntwork-io/terragrunt-action@v1
+        uses: gruntwork-io/terragrunt-action@v2
         with:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
@@ -82,13 +85,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ plan ]
     environment: 'prod'
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Deploy
-        uses: gruntwork-io/terragrunt-action@v1
+        uses: gruntwork-io/terragrunt-action@v2
         with:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
@@ -101,7 +104,7 @@ Example of passing custom code before running Terragrunt:
 ```yaml
 ...
 - name: Plan
-  uses: gruntwork-io/terragrunt-action@v1
+  uses: gruntwork-io/terragrunt-action@v2
   env:
     # configure git to use custom token to clone repository.
     INPUT_PRE_EXEC_1: |
@@ -111,5 +114,43 @@ Example of passing custom code before running Terragrunt:
       git config --global --list
   with:
     tg_command: 'plan'
+...
+```
+
+Example of using GitHub cache for Terraform plugins (providers):
+
+```yaml
+...
+env:
+  tf_version: 1.5.7
+  tg_version: 0.53.2
+  working_dir: project
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Create Terraform Plugin Cache Dir
+        run: mkdir -p $TF_PLUGIN_CACHE_DIR
+
+      - name: Terraform Plugin Cache
+        uses: actions/cache@v4.0.1
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: ${{ runner.os }}-terraform-plugin-cache-${{ hashFiles('**/.terraform.lock.hcl') }}
+
+      - name: Plan
+        uses: gruntwork-io/terragrunt-action@v2
+        env:
+          TF_PLUGIN_CACHE_DIR: /github/workspace/.terraform.d/plugin-cache
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: plan
 ...
 ```
