@@ -92,4 +92,4 @@ runs:
       run: |
         # chmod +x ${{ github.action_path }}/terragrunt.sh
         # ${GITHUB_ACTION_PATH}/terragrunt.sh
-        ${{ github.action_path }}/src/terragrunt.sh
+        ${{ github.action_path }}/src/main.sh
