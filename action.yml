@@ -1,16 +1,16 @@
-name: 'Terragrunt Github Action'
-description: 'Guithub Action for Terragrunt.'
-author:  'info@gruntwork.io'
-branding:
-  icon: 'award'
-  color: 'green'
+name: Terragrunt Action
+description: "Execute Terragrunt Actions"
 inputs:
+  github_token:
+    description: 'GitHub Token'
+    required: true
   tg_version:
     description: 'Terragrunt version to install.'
     required: true
   tf_version:
     description: 'Terraform version to install.'
-    required: true
+  tofu_version:
+    description: 'OpenTofu version to install.'
   tg_command:
     description: 'Terragrunt command to execute.'
     required: true
@@ -21,24 +21,66 @@ inputs:
     description: 'Include execution output as comment'
     default: '0'
     required: false
-  github_token:
-    description: 'Provide a custom Github Access Token (App installation token/PAT/etc)'
-  github_private_path:
-    description: 'Path to a private Github repo/organisation. i.e github.com/<org name here>'    
-  github_auth_type:
-    description: 'Type of authentication token provided (i.e. app | pat )'
-    default: app
-  tg_generate_plan_output:
-    description: 'Generate a plan output file'
-    default: '0'
+  tg_add_approve:
+    description: 'Add -auto-approve to commands which require changes to be applied'
+    default: '1'
     required: false
 outputs:
   tg_action_output:
     description: 'Terragrunt execution output'
   tg_action_exit_code:
     description: 'Terragrunt exit code'
-  tg_plan_output_path:
-    description: 'Terragrunt plan output file path'
+
+env:
+  MISE_VERSION_INSTALL: "v2024.4.0"
+  TF_INPUT: false
+  TF_IN_AUTOMATION: 1
+  SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
+    
 runs:
-  using: 'docker'
-  image: './Dockerfile'
+  using: "composite"
+  steps:
+    # - name: Setup Env
+    #   shell: bash
+    #   run: |
+    #     echo ${MISE_VERSION_INSTALL}
+    #     wget -q "https://github.com/jdx/mise/releases/download/${MISE_VERSION_INSTALL}/mise-${MISE_VERSION_INSTALL}-linux-x64" -O "/usr/bin/mise"
+    #     chmod +x "/usr/bin/mise"
+    #     export PATH="~/.local/share/mise/shims:${PATH}"
+    # - name: Configure Terraform plugin cache
+    #   run: |
+    #     echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > ~/.terraformrc
+    #     mkdir -p ~/.terraform.d/plugin-cache
+    # - name: Cache Terraform
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ~/.terraform.d/plugin-cache
+    #     key: ${{ runner.os }}-terraform-${{ hashFiles(format('{0}/.terraform.lock.hcl', env.TF_DIR)) }}
+    #     restore-keys: ${{ runner.os }}-terraform-
+
+    - name: Setup Terragrunt
+      id: setup-tg
+      uses: autero1/action-terragrunt@v3
+      with:
+        terragrunt-version: ${{ env.tg_version }}
+        token: ${{ env.GITHUB_TOKEN }}
+
+    - uses: hashicorp/setup-terraform@v3
+      id: setup-tf
+      with:
+        terraform_version: ${{ env.tf_version }}
+           
+    - name: Run Command
+      shell: bash
+      env:
+        # INPUT_TF_VERSION: ${{ inputs.tf_version }}
+        # INPUT_TG_VERSION: ${{ inputs.tg_version }}
+        # INPUT_TOFU_VERSION: ${{ inputs.tofu_version }}
+        INPUT_TG_COMMAND: ${{ inputs.tg_command }}
+        INPUT_TG_COMMENT: ${{ inputs.tg_comment }}
+        INPUT_TG_ADD_APPROVE: ${{ inputs.tg_add_approve }}
+        INPUT_TG_DIR: ${{ inputs.tg_dir }}
+      run: |
+        ./src/terragrunt.sh
+        # chmod +x ${GITHUB_ACTION_PATH}/terragrunt.sh
+        # ${GITHUB_ACTION_PATH}/terragrunt.sh
