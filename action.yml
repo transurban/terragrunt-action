@@ -1,16 +1,16 @@
-name: Terragrunt Action
-description: "Execute Terragrunt Actions"
+name: 'Terragrunt Github Action'
+description: 'Guithub Action for Terragrunt.'
+author:  'info@gruntwork.io'
+branding:
+  icon: 'award'
+  color: 'green'
 inputs:
-  github_token:
-    description: 'GitHub Token'
-    required: true
   tg_version:
     description: 'Terragrunt version to install.'
     required: true
   tf_version:
     description: 'Terraform version to install.'
-  tofu_version:
-    description: 'OpenTofu version to install.'
+    required: true
   tg_command:
     description: 'Terragrunt command to execute.'
     required: true
@@ -21,16 +21,25 @@ inputs:
     description: 'Include execution output as comment'
     default: '0'
     required: false
-  tg_add_approve:
-    description: 'Add -auto-approve to commands which require changes to be applied'
-    default: '1'
+  github_token:
+    description: 'Provide a custom Github Access Token (App installation token/PAT/etc)'
+  github_private_path:
+    description: 'Path to a private Github repo/organisation. i.e github.com/<org name here>'    
+  github_auth_type:
+    description: 'Type of authentication token provided (i.e. app | pat )'
+    default: app
+  tg_generate_plan_output:
+    description: 'Generate a plan output file'
+    default: '0'
     required: false
 outputs:
   tg_action_output:
     description: 'Terragrunt execution output'
   tg_action_exit_code:
     description: 'Terragrunt exit code'
-
+  tg_plan_output_path:
+    description: 'Terragrunt plan output file path'
+    
 env:
   MISE_VERSION_INSTALL: "v2024.4.0"
   TF_INPUT: false
