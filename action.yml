@@ -87,6 +87,8 @@ runs:
         INPUT_TG_COMMENT: ${{ inputs.tg_comment }}
         INPUT_TG_ADD_APPROVE: ${{ inputs.tg_add_approve }}
         INPUT_TG_DIR: ${{ inputs.tg_dir }}
+        INPUT_TG_PLAN_FILE: ${{ inputs.tg_plan_file }}
+        INPUT_TG_REDIRECT_OUTPUT: ${{ inputs.tg_redirect_output }}
       run: |
         # chmod +x ${{ github.action_path }}/terragrunt.sh
         # ${GITHUB_ACTION_PATH}/terragrunt.sh
