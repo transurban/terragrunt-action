@@ -157,18 +157,11 @@ function main {
 
   # add auto approve for apply and destroy commands
   if [[ "$tg_command" == "apply"* || "$tg_command" == "destroy"* || "$tg_command" == "run-all apply"* || "$tg_command" == "run-all destroy"* ]]; then
-    export TERRAGRUNT_NON_INTERACTIVE=true
-    export TF_INPUT=false
-    export TF_IN_AUTOMATION=1
-
-    if [[ "${tg_add_approve}" == "1" ]]; then
-      local approvePattern="^(apply|destroy|run-all apply|run-all destroy)"
-      # split command and arguments to insert -auto-approve
-      if [[ $tg_arg_and_commands =~ $approvePattern ]]; then
-          local matchedCommand="${BASH_REMATCH[0]}"
-          local remainingArgs="${tg_arg_and_commands#$matchedCommand}"
-          tg_arg_and_commands="${matchedCommand} -auto-approve ${remainingArgs}"
-      fi
+    local tg_arg_and_commands="${tg_command} -auto-approve --terragrunt-non-interactive ${tg_plan_file}"
+  else
+    local tg_arg_and_commands="${tg_command}"
+    if [[ -n "$tg_plan_file" ]]; then
+      tg_arg_and_commands="${tg_arg_and_commands} -out ${tg_plan_file}"
     fi
   fi
   run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_redirect_output}"
