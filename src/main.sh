@@ -164,6 +164,7 @@ function main {
       tg_arg_and_commands="${tg_arg_and_commands} -out ${tg_plan_file}"
     fi
   fi
+  echo "Running with: \"${tg_dir}\" \"${tg_arg_and_commands}\" \"${tg_redirect_output}\""
   run_terragrunt "${tg_dir}" "${tg_arg_and_commands}" "${tg_redirect_output}"
 
   local -r log_file="${terragrunt_log_file}"
