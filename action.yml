@@ -90,7 +90,6 @@ runs:
         INPUT_TG_ADD_APPROVE: ${{ inputs.tg_add_approve }}
         INPUT_TG_DIR: ${{ inputs.tg_dir }}
       run: |
-        ls -la
-        # ./src/terragrunt.sh
-        # chmod +x ${GITHUB_ACTION_PATH}/terragrunt.sh
+        # chmod +x ${{ github.action_path }}/terragrunt.sh
         # ${GITHUB_ACTION_PATH}/terragrunt.sh
+        ${{ github.action_path }}/src/terragrunt.sh
