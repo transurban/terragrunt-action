@@ -133,6 +133,8 @@ function main {
   local -r tg_redirect_output=${INPUT_TG_REDIRECT_OUTPUT}
   local -r tg_plan_file=${INPUT_TG_PLAN_FILE}
 
+  export | grep "TF_CLI"
+
   # if [[ -z "${tf_version}" ]]; then
   #   log "tf_version is not set"
   #   exit 1
