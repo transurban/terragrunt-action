@@ -159,7 +159,7 @@ function main {
 
   # add auto approve for apply and destroy commands
   if [[ "$tg_command" == "apply"* || "$tg_command" == "destroy"* || "$tg_command" == "run-all apply"* || "$tg_command" == "run-all destroy"* ]]; then
-    local tg_arg_and_commands="${tg_command} -auto-approve --terragrunt-non-interactive ${tg_plan_file}"
+    local tg_arg_and_commands="${tg_command} -auto-approve --non-interactive ${tg_plan_file}"
   else
     local tg_arg_and_commands="${tg_command}"
     if [[ -n "$tg_plan_file" ]]; then
