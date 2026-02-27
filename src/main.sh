@@ -150,7 +150,7 @@ function main {
   #   exit 1
   # fi
   # setup_git
-  # setup_pre_exec
+  setup_pre_exec
 
   # install_terraform "${tf_version}"
   # install_terragrunt "${tg_version}"
